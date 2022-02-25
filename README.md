@@ -17,12 +17,6 @@ Step by step guide:
 - Running Docker container: `docker run -p 8080:8080 petstore-java`
 - Navigate to: http://localhost:8080/PetStore-1.0-SNAPSHOT/api/v1/hello-world
 
-## Database
-In ConnectionFactory.java, the connection string should refer to the host IP address and not localhost which would become the Docker containers database which does not exist.
-
-**Fix**
-Change line 20 `"jdbc:postgresql://localhost:5432/postgres"` to `"jdbc:postgresql://<your-ip-address-here>:5432/postgres"`
-
 ### Connection refused
 If a Connection refused exception is thrown, the PostgreSQL configuration needs to be changed. Add the following line to the PostgreSQL pg_hba.conf file
 - `host  all  all 0.0.0.0/0 md5`
