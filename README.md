@@ -15,7 +15,7 @@ Step by step guide:
 - Building WAR file: `mvn clean install`
 - Building Docker container: `docker build -t petstore-java .`
 - Running Docker container: `docker run -p 8080:8080 petstore-java`
-- Navigate to: http://localhost:8080/PetStore-1.0-SNAPSHOT/api/hello-world
+- Navigate to: http://localhost:8080/PetStore-1.0-SNAPSHOT/api/v1/hello-world
 
 ## Database
 In ConnectionFactory.java, the connection string should refer to the host IP address and not localhost which would become the Docker containers database which does not exist.
