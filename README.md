@@ -10,12 +10,12 @@ Additionally a PostgreSQL Database created with the following script: https://gi
 
 ## Building and running
 Step by step guide:
-- Download: https://maven.apache.org/download.cgi
+- Correct credentials of PostgreSQL database on line 21 in ConnectionFactory.java
 - Navigate to the PetStore repository in terminal
 - Building WAR file: `mvn clean install`
 - Building Docker container: `docker build -t petstore-java .`
 - Running Docker container: `docker run -p 8080:8080 petstore-java`
-- Navigate to: http://localhost:8080/PetStore-1.0-SNAPSHOT/api/v1/hello-world
+- Navigate to: http://localhost:8080/api/v1/hello-world
 
 ### Connection refused
 If a Connection refused exception is thrown, the PostgreSQL configuration needs to be changed. Add the following line to the PostgreSQL pg_hba.conf file
