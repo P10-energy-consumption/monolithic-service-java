@@ -15,7 +15,6 @@ Step by step guide:
 - Building WAR file: `mvn clean install`
 - Building Docker container: `docker build -t petstore-java .`
 - Running Docker container: `docker run -p 8080:8080 petstore-java`
-- Navigate to: http://localhost:8080/api/v1/hello-world
 
 ### Connection refused
 If a Connection refused exception is thrown, the PostgreSQL configuration needs to be changed. Add the following line to the PostgreSQL pg_hba.conf file

@@ -1,26 +1,14 @@
-package org.p10.PetStore.Models;
+package org.p10.PetStore.Models.Pojo;
 
 import java.util.List;
 
-public class Pet {
+public class PetPojo {
     private int id;
-    private PetCategory category;
+    private int category;
     private String name;
     private List<String> photoUrls;
     private String tags;
-    private PetStatus status;
-
-    public Pet() {
-    }
-
-    public Pet(int id, PetCategory category, String name, List<String> photoUrls, String tags, PetStatus status) {
-        this.id = id;
-        this.category = category;
-        this.name = name;
-        this.photoUrls = photoUrls;
-        this.tags = tags;
-        this.status = status;
-    }
+    private int status;
 
     public int getId() {
         return id;
@@ -30,11 +18,11 @@ public class Pet {
         this.id = id;
     }
 
-    public PetCategory getCategory() {
+    public int getCategory() {
         return category;
     }
 
-    public void setCategory(PetCategory category) {
+    public void setCategory(int category) {
         this.category = category;
     }
 
@@ -62,11 +50,11 @@ public class Pet {
         this.tags = tags;
     }
 
-    public PetStatus getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(PetStatus status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
