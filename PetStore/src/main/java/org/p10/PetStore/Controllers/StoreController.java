@@ -8,6 +8,8 @@ import org.p10.PetStore.Repositories.StoreRepository;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Path("/v1")
@@ -39,8 +41,10 @@ public class StoreController {
     @Path("/store/order")
     @Produces("text/plain")
     public Response placeOrder(OrderPojo orderPojo) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        LocalDateTime dateTime = LocalDateTime.parse(orderPojo.getShipDate(), formatter);
         Order order = new Order(orderPojo.getId(), orderPojo.getPetId(),
-                orderPojo.getQuantity(), orderPojo.getShipDate(),
+                orderPojo.getQuantity(), dateTime,
                 OrderStatus.values()[orderPojo.getStatus()], orderPojo.isComplete());
         order = storeRepository.postOrder(order);
         return Response.ok(order).build();

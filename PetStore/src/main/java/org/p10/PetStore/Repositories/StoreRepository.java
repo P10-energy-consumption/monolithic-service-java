@@ -91,7 +91,7 @@ public class StoreRepository implements IStoreRepositories {
             stmt.setInt(1, order.getId());
             stmt.setInt(2, order.getPetId());
             stmt.setInt(3, order.getQuantity());
-            stmt.setDate(4, order.getShipDate());
+            stmt.setDate(4, java.sql.Date.valueOf(order.getShipDate().toLocalDate()));
             stmt.setInt(5, order.getStatus().ordinal());
             stmt.setBoolean(6, order.isComplete());
             stmt.executeUpdate();

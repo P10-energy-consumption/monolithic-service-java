@@ -1,14 +1,10 @@
 package org.p10.PetStore.Models.Pojo;
 
-import java.sql.Date;
-import javax.json.bind.annotation.JsonbDateFormat;
-
 public class OrderPojo {
     private int id;
     private int petId;
     private int quantity;
-    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private Date shipDate;
+    private String shipDate;
     private int status;
     private boolean complete;
 
@@ -36,11 +32,11 @@ public class OrderPojo {
         this.quantity = quantity;
     }
 
-    public Date getShipDate() {
+    public String getShipDate() {
         return shipDate;
     }
 
-    public void setShipDate(Date shipDate) {
+    public void setShipDate(String shipDate) {
         this.shipDate = shipDate;
     }
 

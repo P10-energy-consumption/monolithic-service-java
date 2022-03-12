@@ -1,19 +1,20 @@
 package org.p10.PetStore.Models;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 public class Order {
     private int id;
     private int petId;
     private int quantity;
-    private Date shipDate;
+    private LocalDateTime shipDate;
     private OrderStatus status;
     private boolean complete;
 
     public Order() {
     }
 
-    public Order(int id, int petId, int quantity, Date shipDate, OrderStatus status, boolean complete) {
+    public Order(int id, int petId, int quantity, LocalDateTime shipDate, OrderStatus status, boolean complete) {
         this.id = id;
         this.petId = petId;
         this.quantity = quantity;
@@ -46,12 +47,18 @@ public class Order {
         this.quantity = quantity;
     }
 
-    public Date getShipDate() {
+    public LocalDateTime getShipDate() {
         return shipDate;
     }
 
-    public void setShipDate(Date shipDate) {
+    public void setShipDate(LocalDateTime shipDate) {
         this.shipDate = shipDate;
+    }
+
+    public void setShipDate(Date date) {
+        // Time is not stored in database.
+        // As such, we just store it as the start of the day in the object return from the database.
+        this.shipDate = date.toLocalDate().atStartOfDay();
     }
 
     public OrderStatus getStatus() {
