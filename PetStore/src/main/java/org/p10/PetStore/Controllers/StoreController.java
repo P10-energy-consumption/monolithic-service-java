@@ -56,7 +56,7 @@ public class StoreController {
     public Response deleteOrder(@PathParam("id") int orderId) {
         int affectedRows = storeRepository.deleteOrder(orderId);
         if (affectedRows > 0) {
-            return Response.ok().build();
+            return Response.ok(affectedRows).build();
         } else {
             return Response.serverError().build();
         }

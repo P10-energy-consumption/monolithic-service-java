@@ -28,7 +28,7 @@ public class UserController {
                 UserStatus.values()[userPojo.getStatus()]);
         int affectedRows = userRepository.insertUser(user);
         if (affectedRows > 0) {
-            return Response.ok().build();
+            return Response.ok(affectedRows).build();
         } else {
             return Response.serverError().build();
         }
