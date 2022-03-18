@@ -8,6 +8,8 @@ import org.p10.PetStore.Models.*;
 import org.p10.PetStore.Models.Pojo.PetPhotoPojo;
 import org.p10.PetStore.Models.Pojo.PetPojo;
 import org.p10.PetStore.Repositories.PetRepository;
+import org.p10.PetStore.Repositories.StoreRepository;
+import org.p10.PetStore.Repositories.UserRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,9 +18,13 @@ import java.util.UUID;
 public class PetController {
 
     private final PetRepository petRepository;
+    private final StoreRepository storeRepository;
+    private final UserRepository userRepository;
 
     public PetController() {
         this.petRepository = new PetRepository();
+        this.storeRepository = new StoreRepository();
+        this.userRepository = new UserRepository();
     }
 
     @GET
@@ -26,6 +32,48 @@ public class PetController {
     @Produces("text/plain")
     public Response getPet(@PathParam("id") int petId) {
         Pet pet = petRepository.getPet(petId);
+        return Response.ok(pet).build();
+    }
+
+    @GET
+    @Path("/pet/multiple/{id}")
+    @Produces("text/plain")
+    public Response getMultipleServiceResults(@PathParam("id") int petId) {
+        Pet pet = petRepository.getPet(petId);
+        List<User> users = userRepository.getNewestUsers(10);
+        for (User user : users) {
+            // Need to open new connection as previous call to a method in userRepository closed the connection.
+            userRepository.deleteUser(user.getUserName());
+            userRepository.insertUser(user);
+        }
+        List<Order> orders = storeRepository.getNewestOrders(10);
+        for (Order order : orders) {
+            // Need to open new connection as previous call to a method in storeRepository closed the connection.
+            storeRepository.deleteOrder(order.getId());
+            storeRepository.postOrder(order);
+        }
+        return Response.ok(pet).build();
+    }
+
+    @GET
+    @Path("/pet/printMultiple/{id}")
+    @Produces("text/plain")
+    public Response printMultipleServiceResults(@PathParam("id") int petId) {
+        Pet pet = petRepository.getPet(petId);
+        List<User> users = userRepository.getNewestUsers(10);
+        System.out.println("Users: " + users);
+        for (User user : users) {
+            // Need to open new connection as previous call to a method in userRepository closed the connection.
+            System.out.println("Deleted: " + userRepository.deleteUser(user.getUserName()));
+            System.out.println("Added user " + user.getId() +  ": " + userRepository.insertUser(user));
+        }
+        List<Order> orders = storeRepository.getNewestOrders(10);
+        System.out.println("Orders: " + orders);
+        for (Order order : orders) {
+            // Need to open new connection as previous call to a method in storeRepository closed the connection.
+            System.out.println("Deleted order " + order.getId() + ": " + storeRepository.deleteOrder(order.getId()));
+            System.out.println("Added order " + order.getId() +  ": " + storeRepository.postOrder(order));
+        }
         return Response.ok(pet).build();
     }
 
