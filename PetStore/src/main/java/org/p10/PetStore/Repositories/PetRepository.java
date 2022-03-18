@@ -1,12 +1,10 @@
 package org.p10.PetStore.Repositories;
 
-import org.p10.PetStore.Database.ConnectionFactory;
 import org.p10.PetStore.Models.Pet;
 import org.p10.PetStore.Models.PetCategory;
 import org.p10.PetStore.Models.PetStatus;
 import org.p10.PetStore.Repositories.Interfaces.IPetRepositories;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -14,16 +12,11 @@ import java.util.List;
 import java.util.UUID;
 
 
-public class PetRepository implements IPetRepositories {
-
-    private final Connection connection;
-
-    public PetRepository() {
-        connection = new ConnectionFactory().createDBConnection();
-    }
+public class PetRepository extends Repository implements IPetRepositories {
 
     @Override
     public Pet getPet(int petId) {
+        openConnection();
         Pet pet = null;
         PreparedStatement stmt;
         try {
@@ -54,6 +47,7 @@ public class PetRepository implements IPetRepositories {
 
     @Override
     public int insertPet(Pet pet) {
+        openConnection();
         PreparedStatement stmt;
         try {
             stmt = connection.prepareStatement(
@@ -81,6 +75,7 @@ public class PetRepository implements IPetRepositories {
 
     @Override
     public int updatePet(Pet pet) {
+        openConnection();
         PreparedStatement stmt;
         try {
             stmt = connection.prepareStatement(
@@ -110,6 +105,7 @@ public class PetRepository implements IPetRepositories {
 
     @Override
     public int insertPetPhoto(UUID photoId, int petId, String metaData, String url) {
+        openConnection();
         PreparedStatement stmt;
         try {
             stmt = connection.prepareStatement(
@@ -136,6 +132,7 @@ public class PetRepository implements IPetRepositories {
 
     @Override
     public int deletePet(int petId) {
+        openConnection();
         PreparedStatement stmt;
         try {
             stmt = connection.prepareStatement(
@@ -158,6 +155,7 @@ public class PetRepository implements IPetRepositories {
 
     @Override
     public List<Pet> getPetByStatus(PetStatus status) {
+        openConnection();
         PreparedStatement stmt;
         List<Pet> petList = new ArrayList<>();
         try {

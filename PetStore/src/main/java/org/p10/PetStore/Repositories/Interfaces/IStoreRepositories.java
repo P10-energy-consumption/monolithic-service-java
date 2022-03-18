@@ -10,4 +10,5 @@ public interface IStoreRepositories {
     Order getOrders(int orderId);
     Order postOrder(Order order);
     int deleteOrder(int orderId);
+    List<Order> getNewestOrders(int limit);
 }

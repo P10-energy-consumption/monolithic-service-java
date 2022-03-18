@@ -1,24 +1,19 @@
 package org.p10.PetStore.Repositories;
 
-import org.p10.PetStore.Database.ConnectionFactory;
 import org.p10.PetStore.Models.User;
 import org.p10.PetStore.Models.UserStatus;
 import org.p10.PetStore.Repositories.Interfaces.IUserRepositories;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
-public class UserRepository implements IUserRepositories {
-
-    private final Connection connection;
-
-    public UserRepository() {
-        connection = new ConnectionFactory().createDBConnection();
-    }
+public class UserRepository extends Repository implements IUserRepositories {
 
     @Override
     public int insertUser(User user) {
+        openConnection();
         PreparedStatement stmt;
         try {
             stmt = connection.prepareStatement(
@@ -50,6 +45,7 @@ public class UserRepository implements IUserRepositories {
 
     @Override
     public User getUser(String userName) {
+        openConnection();
         User user = null;
         PreparedStatement stmt;
         try {
@@ -60,16 +56,7 @@ public class UserRepository implements IUserRepositories {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                user = new User();
-                user.setId(rs.getInt("id"));
-                user.setUserName(rs.getString("username"));
-                user.setFirstName(rs.getString("firstname"));
-                user.setLastName(rs.getString("lastname"));
-                user.setEmail(rs.getString("email"));
-                user.setPasswordHash(rs.getString("passwordHash"));
-                user.setSalt(rs.getString("salt"));
-                user.setPhone(rs.getString("phone"));
-                user.setStatus(UserStatus.values()[rs.getInt("status")]);
+                user = getUserFromResultSet(rs);
             }
             stmt.close();
             connection.close();
@@ -85,6 +72,7 @@ public class UserRepository implements IUserRepositories {
 
     @Override
     public User updateUser(User user) {
+        openConnection();
         PreparedStatement stmt;
         try {
             stmt = connection.prepareStatement(
@@ -118,18 +106,73 @@ public class UserRepository implements IUserRepositories {
 
     @Override
     public String deleteUser(String userName) {
+        openConnection();
         PreparedStatement stmt;
         try {
             stmt = connection.prepareStatement(
                     "delete from users.user where username = ?"
             );
             stmt.setString(1, userName);
-            stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
 
             stmt.close();
             connection.close();
 
-            return userName;
+            if (affectedRows > 0) {
+                return userName;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+
+            return null;
+        }
+    }
+
+    @Override
+    public List<User> getNewestUsers(int limit) {
+        openConnection();
+        PreparedStatement stmt;
+        try {
+            stmt = connection.prepareStatement(
+                    "select u.id, u.username, u.status, u.firstname, u.lastname, " +
+                            "u.email, u.phone, u.PasswordHash, u.salt, u.created " +
+                            "from users.user u order by u.created desc limit ?"
+            );
+            stmt.setInt(1, limit);
+            ResultSet rs = stmt.executeQuery();
+            List<User> users = new ArrayList<>();
+            while (rs.next()) {
+                users.add(getUserFromResultSet(rs));
+            }
+
+            stmt.close();
+            connection.close();
+
+            return users;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+
+            return null;
+        }
+    }
+
+    private User getUserFromResultSet(ResultSet rs) {
+        try {
+            User user = new User();
+            user.setId(rs.getInt("id"));
+            user.setUserName(rs.getString("username"));
+            user.setFirstName(rs.getString("firstname"));
+            user.setLastName(rs.getString("lastname"));
+            user.setEmail(rs.getString("email"));
+            user.setPasswordHash(rs.getString("passwordHash"));
+            user.setSalt(rs.getString("salt"));
+            user.setPhone(rs.getString("phone"));
+            user.setStatus(UserStatus.values()[rs.getInt("status")]);
+            return user;
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());

@@ -1,25 +1,18 @@
 package org.p10.PetStore.Repositories;
 
-import org.p10.PetStore.Database.ConnectionFactory;
 import org.p10.PetStore.Models.*;
 import org.p10.PetStore.Repositories.Interfaces.IStoreRepositories;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StoreRepository implements IStoreRepositories {
-
-    private final Connection connection;
-
-    public StoreRepository() {
-        connection = new ConnectionFactory().createDBConnection();
-    }
+public class StoreRepository extends Repository implements IStoreRepositories {
 
     @Override
     public List<InventoryLine> getInventory() {
+        openConnection();
         List<InventoryLine> inventoryLineList = new ArrayList<>();
         PreparedStatement stmt;
         try {
@@ -50,6 +43,7 @@ public class StoreRepository implements IStoreRepositories {
 
     @Override
     public Order getOrders(int orderId) {
+        openConnection();
         Order order = null;
         PreparedStatement stmt;
         try {
@@ -60,13 +54,7 @@ public class StoreRepository implements IStoreRepositories {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                order = new Order();
-                order.setId(rs.getInt("id"));
-                order.setPetId(rs.getInt("petId"));
-                order.setQuantity(rs.getInt("quantity"));
-                order.setShipDate(rs.getDate("shipDate"));
-                order.setStatus(OrderStatus.values()[rs.getInt("status")]);
-                order.setComplete(rs.getBoolean("complete"));
+                order = getOrderFromResultSet(rs);
             }
             stmt.close();
             connection.close();
@@ -82,6 +70,7 @@ public class StoreRepository implements IStoreRepositories {
 
     @Override
     public Order postOrder(Order order) {
+        openConnection();
         PreparedStatement stmt;
         try {
             stmt = connection.prepareStatement(
@@ -110,6 +99,7 @@ public class StoreRepository implements IStoreRepositories {
 
     @Override
     public int deleteOrder(int orderId) {
+        openConnection();
         PreparedStatement stmt;
         try {
             stmt = connection.prepareStatement(
@@ -127,6 +117,51 @@ public class StoreRepository implements IStoreRepositories {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
 
             return 0;
+        }
+    }
+
+    @Override
+    public List<Order> getNewestOrders(int limit) {
+        openConnection();
+        PreparedStatement stmt;
+        try {
+            stmt = connection.prepareStatement("select Id, Status, PetId, Quantity, " +
+                    "ShipDate, Complete, Created " +
+                    "from orders.order where IsDelete = FALSE order by Created desc limit ?");
+            stmt.setInt(1, limit);
+            ResultSet rs = stmt.executeQuery();
+            List<Order> orders = new ArrayList<>();
+            while (rs.next()) {
+                orders.add(getOrderFromResultSet(rs));
+            }
+
+            stmt.close();
+            connection.close();
+
+            return orders;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+
+            return null;
+        }
+    }
+
+    private Order getOrderFromResultSet(ResultSet rs) {
+        try {
+            Order order = new Order();
+            order.setId(rs.getInt("id"));
+            order.setPetId(rs.getInt("petId"));
+            order.setQuantity(rs.getInt("quantity"));
+            order.setShipDate(rs.getDate("shipDate"));
+            order.setStatus(OrderStatus.values()[rs.getInt("status")]);
+            order.setComplete(rs.getBoolean("complete"));
+            return order;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+
+            return null;
         }
     }
 }
