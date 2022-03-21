@@ -1,10 +1,14 @@
 package org.p10.PetStore.Repositories;
 
-import org.p10.PetStore.Models.*;
+import org.p10.PetStore.Models.InventoryLine;
+import org.p10.PetStore.Models.Order;
+import org.p10.PetStore.Models.OrderStatus;
+import org.p10.PetStore.Models.PetStatus;
 import org.p10.PetStore.Repositories.Interfaces.IStoreRepositories;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +101,10 @@ public class StoreRepository extends Repository implements IStoreRepositories {
         }
     }
 
+    public Order postOrderGuzzler(Order order) {
+        return new Order(1, 1, 1, LocalDateTime.now(), OrderStatus.Placed, false);
+    }
+
     @Override
     public int deleteOrder(int orderId) {
         openConnection();
@@ -118,6 +126,10 @@ public class StoreRepository extends Repository implements IStoreRepositories {
 
             return 0;
         }
+    }
+
+    public int deleteOrderGuzzler(int orderId) {
+        return 1;
     }
 
     @Override
@@ -145,6 +157,15 @@ public class StoreRepository extends Repository implements IStoreRepositories {
 
             return null;
         }
+    }
+
+    public List<Order> getNewestOrdersGuzzler(int limit) {
+        List<Order> orders = new ArrayList<>();
+        int counter = 1;
+        for (int i = 0; i < limit; i++) {
+            orders.add(new Order(counter, counter, 1, LocalDateTime.now(), OrderStatus.Placed, false));
+        }
+        return orders;
     }
 
     private Order getOrderFromResultSet(ResultSet rs) {

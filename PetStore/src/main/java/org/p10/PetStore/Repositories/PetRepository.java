@@ -45,6 +45,10 @@ public class PetRepository extends Repository implements IPetRepositories {
         }
     }
 
+    public Pet getPetGuzzler(int petId) {
+        return new Pet(1, PetCategory.Dog, "Guzzler Dog", null, "Guzzler", PetStatus.Available);
+    }
+
     @Override
     public int insertPet(Pet pet) {
         openConnection();

@@ -1,9 +1,5 @@
 package org.p10.PetStore.Controllers;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import org.p10.PetStore.Models.*;
 import org.p10.PetStore.Models.Pojo.PetPhotoPojo;
 import org.p10.PetStore.Models.Pojo.PetPojo;
@@ -11,6 +7,9 @@ import org.p10.PetStore.Repositories.PetRepository;
 import org.p10.PetStore.Repositories.StoreRepository;
 import org.p10.PetStore.Repositories.UserRepository;
 
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,6 +55,26 @@ public class PetController {
     }
 
     @GET
+    @Path("/pet/multipleGuzzler/{id}")
+    @Produces("text/plain")
+    public Response getMultipleServiceResultsGuzzler(@PathParam("id") int petId) {
+        Pet pet = petRepository.getPetGuzzler(petId);
+        List<User> users = userRepository.getNewestUsersGuzzler(10);
+        for (User user : users) {
+            // Need to open new connection as previous call to a method in userRepository closed the connection.
+            userRepository.deleteUserGuzzler(user.getUserName());
+            userRepository.insertUserGuzzler(user);
+        }
+        List<Order> orders = storeRepository.getNewestOrdersGuzzler(10);
+        for (Order order : orders) {
+            // Need to open new connection as previous call to a method in storeRepository closed the connection.
+            storeRepository.deleteOrderGuzzler(order.getId());
+            storeRepository.postOrderGuzzler(order);
+        }
+        return Response.ok(pet).build();
+    }
+
+    @GET
     @Path("/pet/printMultiple/{id}")
     @Produces("text/plain")
     public Response printMultipleServiceResults(@PathParam("id") int petId) {
@@ -73,6 +92,28 @@ public class PetController {
             // Need to open new connection as previous call to a method in storeRepository closed the connection.
             System.out.println("Deleted order " + order.getId() + ": " + storeRepository.deleteOrder(order.getId()));
             System.out.println("Added order " + order.getId() +  ": " + storeRepository.postOrder(order));
+        }
+        return Response.ok(pet).build();
+    }
+
+    @GET
+    @Path("/pet/printMultipleGuzzler/{id}")
+    @Produces("text/plain")
+    public Response printMultipleServiceResultsGuzzler(@PathParam("id") int petId) {
+        Pet pet = petRepository.getPetGuzzler(petId);
+        List<User> users = userRepository.getNewestUsersGuzzler(10);
+        System.out.println("Users: " + users);
+        for (User user : users) {
+            // Need to open new connection as previous call to a method in userRepository closed the connection.
+            System.out.println("Deleted: " + userRepository.deleteUserGuzzler(user.getUserName()));
+            System.out.println("Added user " + user.getId() +  ": " + userRepository.insertUserGuzzler(user));
+        }
+        List<Order> orders = storeRepository.getNewestOrdersGuzzler(10);
+        System.out.println("Orders: " + orders);
+        for (Order order : orders) {
+            // Need to open new connection as previous call to a method in storeRepository closed the connection.
+            System.out.println("Deleted order " + order.getId() + ": " + storeRepository.deleteOrderGuzzler(order.getId()));
+            System.out.println("Added order " + order.getId() +  ": " + storeRepository.postOrderGuzzler(order));
         }
         return Response.ok(pet).build();
     }

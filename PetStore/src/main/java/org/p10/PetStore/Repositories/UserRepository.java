@@ -43,6 +43,10 @@ public class UserRepository extends Repository implements IUserRepositories {
         }
     }
 
+    public int insertUserGuzzler(User user) {
+        return 1;
+    }
+
     @Override
     public User getUser(String userName) {
         openConnection();
@@ -131,6 +135,10 @@ public class UserRepository extends Repository implements IUserRepositories {
         }
     }
 
+    public String deleteUserGuzzler(String userName) {
+        return "1";
+    }
+
     @Override
     public List<User> getNewestUsers(int limit) {
         openConnection();
@@ -158,6 +166,15 @@ public class UserRepository extends Repository implements IUserRepositories {
 
             return null;
         }
+    }
+
+    public List<User> getNewestUsersGuzzler(int limit) {
+        List<User> users = new ArrayList<>();
+        int counter = 1;
+        for (int i = 0; i < limit; i++) {
+            users.add(new User(counter, String.valueOf(counter), "test", "string", "string", "string", "string", "string", UserStatus.Active));
+        }
+        return users;
     }
 
     private User getUserFromResultSet(ResultSet rs) {
