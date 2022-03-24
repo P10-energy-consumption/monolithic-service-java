@@ -5,7 +5,6 @@ import org.p10.PetStore.Database.ConnectionFactory;
 import java.sql.Connection;
 
 public class Repository {
-    public Connection connection;
     private final ConnectionFactory connectionFactory;
 
     public Repository() {
