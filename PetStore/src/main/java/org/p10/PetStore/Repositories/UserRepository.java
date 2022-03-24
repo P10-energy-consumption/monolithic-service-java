@@ -1,6 +1,5 @@
 package org.p10.PetStore.Repositories;
 
-import org.p10.PetStore.Database.ConnectionFactory;
 import org.p10.PetStore.Models.User;
 import org.p10.PetStore.Models.UserStatus;
 import org.p10.PetStore.Repositories.Interfaces.IUserRepositories;
@@ -9,19 +8,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class UserRepository implements IUserRepositories {
-
-    private final Connection connection;
-
-    public UserRepository() {
-        connection = new ConnectionFactory().createDBConnection();
-    }
+public class UserRepository extends Repository implements IUserRepositories {
 
     @Override
     public int insertUser(User user) {
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement(
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(
                     "insert into users.user (id, username, firstname, lastname, email, passwordhash, salt, phone, status, created, createdby) " +
                             "values (?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, 'PetStore.User.Api');"
             );
@@ -50,15 +42,14 @@ public class UserRepository implements IUserRepositories {
 
     @Override
     public User getUser(String userName) {
-        User user = null;
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement("select u.id, u.username, u.status, u.firstname, u.lastname, " +
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("select u.id, u.username, u.status, u.firstname, u.lastname, " +
                     "u.email, u.phone, u.PasswordHash, u.salt " +
                     "from users.user u where u.UserName = ?");
             stmt.setString(1, userName);
             ResultSet rs = stmt.executeQuery();
 
+            User user = null;
             while (rs.next()) {
                 user = new User();
                 user.setId(rs.getInt("id"));
@@ -85,9 +76,8 @@ public class UserRepository implements IUserRepositories {
 
     @Override
     public User updateUser(User user) {
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement(
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(
                     "update users.user set FirstName = ?, LastName = ?, " +
                             "Email = ?, PasswordHash = ?, " +
                             "Salt = ?, Phone = ?, " +
@@ -118,9 +108,8 @@ public class UserRepository implements IUserRepositories {
 
     @Override
     public String deleteUser(String userName) {
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement(
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(
                     "delete from users.user where username = ?"
             );
             stmt.setString(1, userName);
