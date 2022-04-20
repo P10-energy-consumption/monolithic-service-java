@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.3">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Monolith Load Testing" enabled="true">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Load Testing" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
@@ -161,10 +161,13 @@
               <assertionsResultsToSave>0</assertionsResultsToSave>
               <bytes>true</bytes>
               <sentBytes>true</sentBytes>
+              <url>true</url>
               <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
             </value>
           </objProp>
-          <stringProp name="filename">mono_results_setup.csv</stringProp>
+          <stringProp name="filename">JMeterSetup.csv</stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>
@@ -547,10 +550,13 @@
               <assertionsResultsToSave>0</assertionsResultsToSave>
               <bytes>true</bytes>
               <sentBytes>true</sentBytes>
+              <url>true</url>
               <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
             </value>
           </objProp>
-          <stringProp name="filename">mono_results_clients.csv</stringProp>
+          <stringProp name="filename">JMeterClients.csv</stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>
@@ -656,10 +662,13 @@
               <assertionsResultsToSave>0</assertionsResultsToSave>
               <bytes>true</bytes>
               <sentBytes>true</sentBytes>
+              <url>true</url>
               <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
             </value>
           </objProp>
-          <stringProp name="filename">mono_results_teardown.csv</stringProp>
+          <stringProp name="filename">JMeterTeardown.csv</stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>
