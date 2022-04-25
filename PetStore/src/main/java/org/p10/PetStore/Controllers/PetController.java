@@ -1,6 +1,8 @@
 package org.p10.PetStore.Controllers;
 
 import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -11,11 +13,14 @@ import org.p10.PetStore.Repositories.PetRepository;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Path("/v1")
 public class PetController {
 
     private final PetRepository petRepository;
+    private static final ExecutorService executor = Executors.newFixedThreadPool(10);
 
     public PetController() {
         this.petRepository = new PetRepository();
@@ -24,9 +29,12 @@ public class PetController {
     @GET
     @Path("/pet/{id}")
     @Produces("text/plain")
-    public Response getPet(@PathParam("id") int petId) {
-        Pet pet = petRepository.getPet(petId);
-        return Response.ok(pet).build();
+    public void getPet(@PathParam("id") int petId, @Suspended AsyncResponse response) {
+        executor.submit(() -> {
+            System.out.println("Getting Pet by id: " + petId);
+            response.resume(petRepository.getPet(petId));
+            return null;
+        });
     }
 
     @POST
