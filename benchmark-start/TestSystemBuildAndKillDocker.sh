@@ -2,13 +2,16 @@
 
 idle=450
 clients=7200
-setup=30
-setup_teardown=$setup
-good_measure=300
-end=$((SECONDS+$idle+$setup+$clients+$setup_teardown+$good_measure+$idle))
+# Add extra time to make sure benchmark is truely done.
+# TestSystemRunAllBenchmarks gives 10 minute leeway.
+extra_time=300
+end=$((SECONDS+$idle+$clients+$idle+$extra_time))
 
-
+# Build and run Docker container.
+# NOTE: This shell script starts a subprocess.
+# Immediately goes to the following sleep command.
 ./TestSystemDockerBuildAndRun.sh
+
 # Stop docker container after benchmark is done.
 sleep $end
 docker kill $(docker ps -q)
