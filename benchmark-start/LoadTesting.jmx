@@ -143,13 +143,13 @@
               <timestamp>true</timestamp>
               <success>true</success>
               <label>true</label>
-              <code>false</code>
-              <message>false</message>
-              <threadName>false</threadName>
-              <dataType>false</dataType>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
               <encoding>false</encoding>
-              <assertions>false</assertions>
-              <subresults>false</subresults>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
               <responseData>false</responseData>
               <samplerData>false</samplerData>
               <xml>false</xml>
@@ -157,7 +157,7 @@
               <responseHeaders>false</responseHeaders>
               <requestHeaders>false</requestHeaders>
               <responseDataOnError>false</responseDataOnError>
-              <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
               <assertionsResultsToSave>0</assertionsResultsToSave>
               <bytes>true</bytes>
               <sentBytes>true</sentBytes>
@@ -532,13 +532,13 @@
               <timestamp>true</timestamp>
               <success>true</success>
               <label>true</label>
-              <code>false</code>
-              <message>false</message>
-              <threadName>false</threadName>
-              <dataType>false</dataType>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
               <encoding>false</encoding>
-              <assertions>false</assertions>
-              <subresults>false</subresults>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
               <responseData>false</responseData>
               <samplerData>false</samplerData>
               <xml>false</xml>
@@ -546,7 +546,7 @@
               <responseHeaders>false</responseHeaders>
               <requestHeaders>false</requestHeaders>
               <responseDataOnError>false</responseDataOnError>
-              <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
               <assertionsResultsToSave>0</assertionsResultsToSave>
               <bytes>true</bytes>
               <sentBytes>true</sentBytes>
@@ -644,13 +644,13 @@
               <timestamp>true</timestamp>
               <success>true</success>
               <label>true</label>
-              <code>false</code>
-              <message>false</message>
-              <threadName>false</threadName>
-              <dataType>false</dataType>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
               <encoding>false</encoding>
-              <assertions>false</assertions>
-              <subresults>false</subresults>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
               <responseData>false</responseData>
               <samplerData>false</samplerData>
               <xml>false</xml>
@@ -658,7 +658,7 @@
               <responseHeaders>false</responseHeaders>
               <requestHeaders>false</requestHeaders>
               <responseDataOnError>false</responseDataOnError>
-              <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
               <assertionsResultsToSave>0</assertionsResultsToSave>
               <bytes>true</bytes>
               <sentBytes>true</sentBytes>
