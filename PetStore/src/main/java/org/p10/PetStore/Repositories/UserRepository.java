@@ -1,6 +1,5 @@
 package org.p10.PetStore.Repositories;
 
-import org.p10.PetStore.Database.ConnectionFactory;
 import org.p10.PetStore.Models.User;
 import org.p10.PetStore.Models.UserStatus;
 import org.p10.PetStore.Repositories.Interfaces.IUserRepositories;
@@ -8,6 +7,8 @@ import org.p10.PetStore.Repositories.Interfaces.IUserRepositories;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserRepository extends Repository implements IUserRepositories {
 
@@ -42,7 +43,7 @@ public class UserRepository extends Repository implements IUserRepositories {
     }
 
     public int insertUserGuzzler(User user) {
-        return 1;
+        return user.getId();
     }
 
     @Override
@@ -128,15 +129,13 @@ public class UserRepository extends Repository implements IUserRepositories {
     }
 
     public String deleteUserGuzzler(String userName) {
-        return "1";
+        return userName;
     }
 
     @Override
     public List<User> getNewestUsers(int limit) {
-        openConnection();
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement(
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(
                     "select u.id, u.username, u.status, u.firstname, u.lastname, " +
                             "u.email, u.phone, u.PasswordHash, u.salt, u.created " +
                             "from users.user u order by u.created desc limit ?"

@@ -6,6 +6,7 @@ import org.p10.PetStore.Repositories.Interfaces.IStoreRepositories;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,7 +94,7 @@ public class StoreRepository extends Repository implements IStoreRepositories {
     }
 
     public Order postOrderGuzzler(Order order) {
-        return new Order(1, 1, 1, LocalDateTime.now(), OrderStatus.Placed, false);
+        return new Order(order.getId(), order.getPetId(), order.getQuantity(), LocalDateTime.now(), OrderStatus.Placed, false);
     }
 
     @Override
@@ -118,15 +119,13 @@ public class StoreRepository extends Repository implements IStoreRepositories {
     }
 
     public int deleteOrderGuzzler(int orderId) {
-        return 1;
+        return orderId;
     }
 
     @Override
     public List<Order> getNewestOrders(int limit) {
-        openConnection();
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement("select Id, Status, PetId, Quantity, " +
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("select Id, Status, PetId, Quantity, " +
                     "ShipDate, Complete, Created " +
                     "from orders.order where IsDelete = FALSE order by Created desc limit ?");
             stmt.setInt(1, limit);

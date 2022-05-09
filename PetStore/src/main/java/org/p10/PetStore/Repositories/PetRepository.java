@@ -1,6 +1,5 @@
 package org.p10.PetStore.Repositories;
 
-import org.p10.PetStore.Database.ConnectionFactory;
 import org.p10.PetStore.Models.Pet;
 import org.p10.PetStore.Models.PetCategory;
 import org.p10.PetStore.Models.PetStatus;
@@ -41,7 +40,7 @@ public class PetRepository extends Repository implements IPetRepositories {
     }
 
     public Pet getPetGuzzler(int petId) {
-        return new Pet(1, PetCategory.Dog, "Guzzler Dog", null, "Guzzler", PetStatus.Available);
+        return new Pet(petId, PetCategory.Dog, "Guzzler Dog", null, "Guzzler", PetStatus.Available);
     }
 
     @Override
