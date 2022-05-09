@@ -1,14 +1,11 @@
 package org.p10.PetStore.Repositories;
 
-import org.p10.PetStore.Models.InventoryLine;
-import org.p10.PetStore.Models.Order;
-import org.p10.PetStore.Models.OrderStatus;
-import org.p10.PetStore.Models.PetStatus;
+import org.p10.PetStore.Models.*;
 import org.p10.PetStore.Repositories.Interfaces.IStoreRepositories;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,16 +13,14 @@ public class StoreRepository extends Repository implements IStoreRepositories {
 
     @Override
     public List<InventoryLine> getInventory() {
-        openConnection();
-        List<InventoryLine> inventoryLineList = new ArrayList<>();
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement(
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(
                     "select Status, count(Id) from pets.pet " +
                             "where IsDelete = FALSE group by Status"
             );
             ResultSet rs = stmt.executeQuery();
 
+            List<InventoryLine> inventoryLineList = new ArrayList<>();
             while (rs.next()) {
                 InventoryLine inventoryLine = new InventoryLine();
                 inventoryLine.setStatus(PetStatus.values()[rs.getInt("Status")]);
@@ -47,16 +42,14 @@ public class StoreRepository extends Repository implements IStoreRepositories {
 
     @Override
     public Order getOrders(int orderId) {
-        openConnection();
-        Order order = null;
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement("select Id, Status, PetId, Quantity, " +
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("select Id, Status, PetId, Quantity, " +
                     "ShipDate, Complete " +
                     "from orders.order where IsDelete = FALSE and id = ?");
             stmt.setInt(1, orderId);
             ResultSet rs = stmt.executeQuery();
 
+            Order order = null;
             while (rs.next()) {
                 order = getOrderFromResultSet(rs);
             }
@@ -74,10 +67,8 @@ public class StoreRepository extends Repository implements IStoreRepositories {
 
     @Override
     public Order postOrder(Order order) {
-        openConnection();
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement(
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(
                     "insert into orders.order (id, petid, quantity, shipdate, status, complete, created, createdby) " +
                             "values (?, ?, ?, ?, ?, ?, current_timestamp, 'PetStore.Store.Api');"
             );
@@ -107,10 +98,8 @@ public class StoreRepository extends Repository implements IStoreRepositories {
 
     @Override
     public int deleteOrder(int orderId) {
-        openConnection();
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement(
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(
                     "DELETE FROM orders.order where id=?"
             );
             stmt.setInt(1, orderId);

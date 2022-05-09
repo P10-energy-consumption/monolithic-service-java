@@ -1,12 +1,15 @@
 package org.p10.PetStore.Repositories;
 
+import org.p10.PetStore.Database.ConnectionFactory;
 import org.p10.PetStore.Models.Pet;
 import org.p10.PetStore.Models.PetCategory;
 import org.p10.PetStore.Models.PetStatus;
 import org.p10.PetStore.Repositories.Interfaces.IPetRepositories;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -16,22 +19,14 @@ public class PetRepository extends Repository implements IPetRepositories {
 
     @Override
     public Pet getPet(int petId) {
-        openConnection();
-        Pet pet = null;
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement("SELECT * FROM pets.pet WHERE id=?");
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM pets.pet WHERE id=?");
             stmt.setInt(1, petId);
             ResultSet rs = stmt.executeQuery();
 
+            Pet pet = null;
             while (rs.next()) {
-                pet = new Pet();
-                pet.setId(rs.getInt("id"));
-                pet.setCategory(PetCategory.values()[rs.getInt("category")]);
-                pet.setName(rs.getString("name"));
-                pet.setPhotoUrls(null);
-                pet.setTags(rs.getString("tags"));
-                pet.setStatus(PetStatus.values()[rs.getInt("status")]);
+                pet = createPetFromResultSet(rs);
             }
             stmt.close();
             connection.close();
@@ -51,10 +46,8 @@ public class PetRepository extends Repository implements IPetRepositories {
 
     @Override
     public int insertPet(Pet pet) {
-        openConnection();
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement(
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(
                     "insert into pets.pet (id, name, category, status, tags, created, createdby) " +
                             "values (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, 'PetStore.Pet.Api');"
             );
@@ -79,10 +72,8 @@ public class PetRepository extends Repository implements IPetRepositories {
 
     @Override
     public int updatePet(Pet pet) {
-        openConnection();
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement(
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(
                     "update pets.pet set Name = ?, Status = ?, Tags = ?, " +
                             "Category = ?, Modified = current_timestamp, " +
                             "ModifiedBy = 'PetStore.Pet.Api' " +
@@ -109,10 +100,8 @@ public class PetRepository extends Repository implements IPetRepositories {
 
     @Override
     public int insertPetPhoto(UUID photoId, int petId, String metaData, String url) {
-        openConnection();
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement(
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(
                     "insert into pets.photos (id, petid, url, metadata, created, createdby) " +
                             "values (?, ?, ?, ?, current_timestamp, 'PetStore.Pet.Api')"
             );
@@ -136,10 +125,8 @@ public class PetRepository extends Repository implements IPetRepositories {
 
     @Override
     public int deletePet(int petId) {
-        openConnection();
-        PreparedStatement stmt;
-        try {
-            stmt = connection.prepareStatement(
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(
                     "DELETE FROM pets.pet where id=?"
             );
             stmt.setInt(1, petId);
@@ -159,27 +146,17 @@ public class PetRepository extends Repository implements IPetRepositories {
 
     @Override
     public List<Pet> getPetByStatus(PetStatus status) {
-        openConnection();
-        PreparedStatement stmt;
-        List<Pet> petList = new ArrayList<>();
-        try {
-            stmt = connection.prepareStatement(
+        try (Connection connection = openConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(
                     "select p.id, p.Name, p.Category, p.Status, p.Tags " +
                             "from pets.pet p where p.IsDelete = FALSE and p.status = ?"
             );
             stmt.setInt(1, status.ordinal());
             ResultSet rs = stmt.executeQuery();
 
+            List<Pet> petList = new ArrayList<>();
             while (rs.next()) {
-                Pet pet = new Pet();
-                pet.setId(rs.getInt("id"));
-                pet.setCategory(PetCategory.values()[rs.getInt("category")]);
-                pet.setName(rs.getString("name"));
-                pet.setPhotoUrls(null);
-                pet.setTags(rs.getString("tags"));
-                pet.setStatus(PetStatus.values()[rs.getInt("status")]);
-
-                petList.add(pet);
+                petList.add(createPetFromResultSet(rs));
             }
 
             stmt.close();
@@ -190,6 +167,22 @@ public class PetRepository extends Repository implements IPetRepositories {
             e.printStackTrace();
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
 
+            return null;
+        }
+    }
+
+    private Pet createPetFromResultSet(ResultSet rs) {
+        Pet pet = new Pet();
+        try {
+            pet.setId(rs.getInt("id"));
+            pet.setCategory(PetCategory.values()[rs.getInt("category")]);
+            pet.setName(rs.getString("name"));
+            pet.setPhotoUrls(null);
+            pet.setTags(rs.getString("tags"));
+            pet.setStatus(PetStatus.values()[rs.getInt("status")]);
+            return pet;
+        } catch (SQLException e) {
+            e.printStackTrace();
             return null;
         }
     }
