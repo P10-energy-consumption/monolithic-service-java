@@ -5,7 +5,7 @@ clients=7200
 end=$((SECONDS+$idle+$clients+$idle))
 
 echo "Starting benchmark"
-./TestSystemBuildAndKillDocker.sh
+./TestSystemBuildAndKillDocker.sh &
 # Wait for Docker containers to start
 sleep 60
 
