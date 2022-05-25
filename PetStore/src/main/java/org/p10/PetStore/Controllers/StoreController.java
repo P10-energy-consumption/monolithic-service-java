@@ -6,6 +6,7 @@ import org.p10.PetStore.Models.Pojo.OrderPojo;
 import org.p10.PetStore.Models.OrderStatus;
 import org.p10.PetStore.Repositories.StoreRepository;
 
+import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Path("/v1")
+@Singleton
 public class StoreController {
 
     private final StoreRepository storeRepository;

@@ -1,5 +1,6 @@
 package org.p10.PetStore.Controllers;
 
+import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Path("/v1")
+@Singleton
 public class PetController {
 
     private final PetRepository petRepository;

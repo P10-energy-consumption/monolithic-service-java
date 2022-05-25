@@ -5,10 +5,12 @@ import org.p10.PetStore.Models.Pojo.UserPojo;
 import org.p10.PetStore.Models.UserStatus;
 import org.p10.PetStore.Repositories.UserRepository;
 
+import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 @Path("/v1")
+@Singleton
 public class UserController {
 
     private final UserRepository userRepository;
